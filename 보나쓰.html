@@ -32,6 +32,65 @@
 
     <div id="editor"></div>
 
+    <div class="time-section"> <!--타이머 설정 -->
+                    <label for="submitTime"></label>
+                    <input type="datetime-local" id="submitTime" name="submitTime">
+                    <button id="setTimeBtn">확인</button>
+                    <button id="stopTimeBtn">삭제</button>
+                    <div class="timer"> <span id="timeLeft">--:--:--</span></div>
+                </div>
+
+    <script>
+        const submitTimeInput = document.getElementById("submitTime");
+        const setTimeBtn = document.getElementById("setTimeBtn");
+        const stopTimeBtn = document.getElementById("stopTimeBtn");
+        const timeLeftDisplay = document.getElementById("timeLeft");
+        let countdownInterval;
+
+        setTimeBtn.addEventListener("click", () => {
+            const selectedTime = new Date(submitTimeInput.value);
+            if (isNaN(selectedTime)) {
+                alert("유효한 시간을 선택하세요!");
+                return;
+            }
+
+            // 기존 타이머 있으면 제거
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            timeLeftDisplay.style.color = "black";
+
+            countdownInterval = setInterval(() => {
+                const now = new Date();
+                const diff = selectedTime - now;
+
+                if (diff <= 0) {
+                    clearInterval(countdownInterval);
+                    timeLeftDisplay.textContent = "제출 마감!";
+                    timeLeftDisplay.style.color = "red";
+                    return;
+                }
+
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                timeLeftDisplay.textContent =
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        });
+
+         stopTimeBtn.addEventListener("click", () => {
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+        }
+        submitTimeInput.value = ""; 
+        timeLeftDisplay.textContent = "--:--:--"; 
+        timeLeftDisplay.style.color = "black"; 
+    });
+
+    </script>
+
     <script src="./자바다 이자슥아.js"></script>
 </body>
 
